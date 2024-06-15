@@ -2,10 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package proyectoedaa;
+package Logica;
 
-import Logica.Movimiento;
-import Logica.Persona;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -18,16 +16,18 @@ import java.util.LinkedList;
 import java.util.Map;
 import javax.swing.JOptionPane;
 
+import Logica.Grafo;
+
 public class LecturaEscritura implements Serializable{
     //String rutaUsuarios = "Privado\\"+p.getUsuario()+"_"+p.getContraseña(); //ruta para usuarios
     //String rutaLu = "Privado\\LU.ser"; //ruta para el hashmap de usuarios
     
     //private Map<String, String> Usuarios = leerOCrearHashMapDesdeArchivo(rutaLu);
     
-    public void registrarUsuario(Persona p) {
+    /*public void registrarUsuario(Persona p) {
         String rutaUsuarios = ("Privado\\"+p.getUsuario()+"_"+p.getContraseña()+".txt"); //ruta para usuarios
-        String rutaLu = "Privado\\LU.txt"; //ruta para el hashmap de usuarios
-        Map<String, String> Usuarios = leerOCrearHashMapDesdeArchivo(rutaLu);
+        String rutaGr = "Privado\\Gr.txt"; //ruta para el hashmap de usuarios
+        Map<String, String> Usuarios = leerOCrearHashMapDesdeArchivo(rutaGr);
         LinkedList lista = new LinkedList();
         if(p.getContraseña().equals(Usuarios.get(p.getUsuario()))){
             JOptionPane.showMessageDialog(null, "El usuario ya existe, intente nuevamente.");
@@ -36,9 +36,9 @@ public class LecturaEscritura implements Serializable{
             lista.add(p);
             guardarObjeto(lista,rutaUsuarios);
             Usuarios.put(p.getUsuario(), p.getContraseña());
-            guardarHashMapEnArchivo(Usuarios,rutaLu);
+            guardarHashMapEnArchivo(Usuarios,rutaGr);
         }
-    }
+    }*/
     
     public boolean IngresarUsuario(String usuario,  String contraseña){
         String rutaLu = "Privado\\LU.txt";
@@ -60,10 +60,11 @@ public class LecturaEscritura implements Serializable{
             e.printStackTrace();
         }
     }
-    public void gObjeto(Movimiento objeto, String rutaArchivo){
+    /*   Esta parte se hiso para que hallan dobles pero eso se manejara en otro lado digo yo
+    public void gObjeto(Grafo objeto, String rutaArchivo){
         LinkedList li = (LinkedList)lObjeto(rutaArchivo);
         for(int i=1; i<li.size(); i++){
-            Movimiento mov = (Movimiento)li.get(i);
+            Grafo mov = (Grafo)li.get(i);
             if(mov.getFecha().equals(objeto.getFecha()) && mov.getCategoria().equals(objeto.getCategoria()) && (mov.getMonto() == objeto.getMonto())){
                 JOptionPane.showMessageDialog(null, "El movimiento ya existe");
                 break;
@@ -83,7 +84,7 @@ public class LecturaEscritura implements Serializable{
                 li.set(0, p);
                 guardarObjeto(li, rutaArchivo);
         }
-    }
+    }*/
     public void gLista(Object objeto, String rutaArchivo){
         guardarObjeto(objeto, rutaArchivo);
     }
@@ -106,6 +107,8 @@ public class LecturaEscritura implements Serializable{
     }
     
     
+    ///////////////////////////////___Esto puede ser considerado si la lectura ordinaria no funciona___////////////////////////////////////
+
     private static Map<String, String> leerOCrearHashMapDesdeArchivo(String rutaArchivo) {
         File archivo = new File(rutaArchivo);
 

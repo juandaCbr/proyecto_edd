@@ -1,5 +1,5 @@
 //11/04/24
-package proyectoedaa.Logica;
+package Logica;
 
 import java.util.Collections;
 import java.util.LinkedList;
