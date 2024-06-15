@@ -1,14 +1,14 @@
 //11/04/24
 package Logica;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 
-public class Grafo {
+public class Grafo implements Serializable{
     private int V;
-    private int A;
     private LinkedList<LinkedList<Arista>> adj;
     private LinkedList<Vertice> nod;
 
@@ -20,16 +20,15 @@ public class Grafo {
         return adj;
     }
 
-    public Grafo(int nodos) {
-        this.V = nodos;
-        this.A = 0;
+    public Grafo() {
+        this.V = 0;
         this.adj = new LinkedList<LinkedList<Arista>>();
         this.nod = new LinkedList<Vertice>();
     }
 
     public void imprimirGrafo() {
         for (int i = 0; i < V; i++) {
-            System.out.print("\nVertice " + i + ": ");
+            System.out.print("\nVertice: "+ i +", Numero: "+nod.get(i).Numero+", Velocidad: "+nod.get(i).Velocidad_adquirida+", Direccion: "+nod.get(i).Direccion+", Operadora: "+nod.get(i).Operadora+": ");
             for (int j = 0; j < adj.get(i).size(); j++) {
                 System.out.print(adj.get(i).get(j).d + " ");
             }
@@ -37,7 +36,7 @@ public class Grafo {
         System.out.println("");
     }
 
-    public class Arista {
+    public class Arista implements Serializable{
         public int o, d, peso;
 
         public Arista(int o, int d, int peso) {
@@ -47,13 +46,13 @@ public class Grafo {
         }
     }
 
-    public class Vertice {
-        long Numero;
-        String Velocidad_adquirida;
+    public class Vertice implements Serializable{
+        String Numero;
+        int Velocidad_adquirida;
         String Direccion;
         String Operadora;
 
-        public Vertice(long Numero, String Velocidad_adquirida, String Direccion, String Operadora){
+        public Vertice(String Numero, int Velocidad_adquirida, String Direccion, String Operadora){
             this.Numero = Numero;
             this.Velocidad_adquirida = Velocidad_adquirida;
             this.Direccion = Direccion;
@@ -61,20 +60,19 @@ public class Grafo {
         }
     }
 
-    public void agregarVertice(long Numero, String Velocidad_adquirida, String Direccion, String Operadora, int u, int v, int peso){
+    public void agregarVertice(String Numero, int Velocidad_adquirida, String Direccion, String Operadora, int u, int v, int peso){
         nod.add(new Vertice(Numero, Velocidad_adquirida, Direccion, Operadora));
         adj.add(new LinkedList<Arista>());
         agregarArista(u, v, peso);
     }
     public void agregarArista(int u, int v, int peso) {
         LinkedList<Arista> aux = new LinkedList<>();
-        aux =adj.get(u);
+        aux = adj.get(u);
         aux.add(new Arista(u, v, peso));
         adj.set(u, aux);
         aux = adj.get(v);
         aux.add(new Arista(v, u, peso));
         adj.set(v, aux);
-        A++;
     }
 
     public void dfs(int s) {
@@ -120,7 +118,7 @@ public class Grafo {
     }
 
     public Grafo Kruskal() {
-        Grafo Arbol_Recubridor_Minimo = new Grafo(V);
+        Grafo Arbol_Recubridor_Minimo = new Grafo();
         LinkedList<Arista> AristasOrdenadas = new LinkedList<>();
         for (LinkedList<Arista> i : adj) {
             for (Arista j : i) {
@@ -141,7 +139,7 @@ public class Grafo {
     public Grafo Prims() {
         boolean[] visited = new boolean[V];
         Stack<Integer> stack = new Stack<>();
-        Grafo Arbol_Recubridor_Minimo = new Grafo(V);
+        Grafo Arbol_Recubridor_Minimo = new Grafo();
         LinkedList<Arista> AristasOrdenadas = new LinkedList<>();
         for (LinkedList<Arista> i : adj) {
             for (Arista j : i) {
@@ -157,7 +155,7 @@ public class Grafo {
         visited[pos.o] = true;
         visited[pos.d] = true;
         while (!stack.isEmpty()) {
-            int u = stack.pop();
+            stack.pop();
             for (Arista i : AristasOrdenadas) {
                 if (visited[i.o] && !visited[i.d]) {
                     if (!Arbol_Recubridor_Minimo.hayCiclo(i.o, i.d)) {
@@ -175,6 +173,7 @@ public class Grafo {
     /////// ARBOL RECUBRIDOR MINIMO ///////
 
     /////// CAMINO MAS CORTO ///////
+    @SuppressWarnings("unchecked")
     public void Dijkstra(int origen, int destino) {
         int[] distancia = new int[V];
         boolean[] visitado = new boolean[V];
@@ -208,6 +207,7 @@ public class Grafo {
                     + distancia[destino]);
             System.out.print("El camino es: " + origen);
             int j = destino;
+            @SuppressWarnings("rawtypes")
             Stack camino = new Stack();
             camino.push(j);
             do {
