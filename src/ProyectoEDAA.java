@@ -10,7 +10,7 @@ public class ProyectoEDAA {
         grafito.agregarVertice("3186779488", 10, "gdsgdgsgdsg", "Movistar", 1, 0, 10);
         grafito.imprimirGrafo();
         
-        //prueva.gLista(grafito, "proyecto_edd\\Privado\\Gr.txt");
+        prueva.gLista(grafito, "proyecto_edd\\Privado\\Gr.txt");
         grafite = (Grafo) prueva.lObjeto("proyecto_edd\\Privado\\Gr.txt");
         grafite.imprimirGrafo();
     }   

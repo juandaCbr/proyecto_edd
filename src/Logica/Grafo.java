@@ -16,6 +16,9 @@ public class Grafo implements Serializable{
         return V;
     }
 
+    public LinkedList<Vertice> getNod(){
+        return nod;
+    }
     public LinkedList<LinkedList<Arista>> getAdj() {
         return adj;
     }
@@ -28,7 +31,7 @@ public class Grafo implements Serializable{
 
     public void imprimirGrafo() {
         for (int i = 0; i < V; i++) {
-            System.out.print("\nVertice: "+ i +", Numero: "+nod.get(i).Numero+", Velocidad: "+nod.get(i).Velocidad_adquirida+", Direccion: "+nod.get(i).Direccion+", Operadora: "+nod.get(i).Operadora+": ");
+            System.out.println("\nVertice: "+ i +", Numero: "+nod.get(i).Numero+", Velocidad: "+nod.get(i).Velocidad_adquirida+", Direccion: "+nod.get(i).Direccion+", Operadora: "+nod.get(i).Operadora);
             for (int j = 0; j < adj.get(i).size(); j++) {
                 System.out.print(adj.get(i).get(j).d + " ");
             }
@@ -37,7 +40,7 @@ public class Grafo implements Serializable{
     }
 
     public class Arista implements Serializable{
-        public int o, d, peso;
+        private int o, d, peso;
 
         public Arista(int o, int d, int peso) {
             this.o = o;
@@ -47,10 +50,8 @@ public class Grafo implements Serializable{
     }
 
     public class Vertice implements Serializable{
-        String Numero;
-        int Velocidad_adquirida;
-        String Direccion;
-        String Operadora;
+        private String Numero, Direccion, Operadora;
+        private int Velocidad_adquirida;
 
         public Vertice(String Numero, int Velocidad_adquirida, String Direccion, String Operadora){
             this.Numero = Numero;
@@ -64,6 +65,7 @@ public class Grafo implements Serializable{
         nod.add(new Vertice(Numero, Velocidad_adquirida, Direccion, Operadora));
         adj.add(new LinkedList<Arista>());
         agregarArista(u, v, peso);
+        this.V++;
     }
     public void agregarArista(int u, int v, int peso) {
         LinkedList<Arista> aux = new LinkedList<>();
