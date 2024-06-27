@@ -27,46 +27,105 @@ public class Grafo implements Serializable{
         this.V = 0;
         this.adj = new LinkedList<LinkedList<Arista>>();
         this.nod = new LinkedList<Vertice>();
+        nod.add(new Vertice(" ", 0, new Direccion((byte)0, (byte)0, (byte)0, " "), " "));
     }
 
     public void imprimirGrafo() {
         for (int i = 0; i < V; i++) {
-            System.out.println("\nVertice: "+ i +", Numero: "+nod.get(i).Numero+", Velocidad: "+nod.get(i).Velocidad_adquirida+", Direccion: "+nod.get(i).Direccion+", Operadora: "+nod.get(i).Operadora);
+            System.out.println("\nVertice: "+ i +", Numero: "+nod.get(i).Numero+", Velocidad: "+nod.get(i).Velocidad_adquirida+", Direccion: "+nod.get(i).direccion.imprimirD()+", Operadora: "+nod.get(i).Operadora);
             for (int j = 0; j < adj.get(i).size(); j++) {
-                System.out.print(adj.get(i).get(j).d + " ");
+                System.out.print(adj.get(i).get(j).getD() + " ");
             }
         }
         System.out.println("");
     }
 
-    public class Arista implements Serializable{
-        private int o, d, peso;
+    private class Arista implements Serializable{
+        private int peso;
+        private Vertice Do, Dd;
 
         public Arista(int o, int d, int peso) {
-            this.o = o;
-            this.d = d;
+            this.Do = nod.get(o);
+            this.Dd = nod.get(d);
             this.peso = peso;
+        }
+        public int getO(){
+            return nod.indexOf(Do);
+        }
+        public int getD(){
+            return nod.indexOf(Dd);
         }
     }
 
-    public class Vertice implements Serializable{
-        private String Numero, Direccion, Operadora;
+    private class Vertice implements Serializable{
+        private String Numero, Operadora;
+        private Direccion direccion = new Direccion();
         private int Velocidad_adquirida;
 
-        public Vertice(String Numero, int Velocidad_adquirida, String Direccion, String Operadora){
+        public Vertice(String Numero, int Velocidad_adquirida, Direccion direccion, String Operadora){
             this.Numero = Numero;
             this.Velocidad_adquirida = Velocidad_adquirida;
-            this.Direccion = Direccion;
+            this.direccion = direccion;
             this.Operadora = Operadora;
         }
     }
+    public class Direccion implements Serializable{
+        private byte Carrera, Calle, Casa;
+        private String extra;
+        Direccion(){}
+        Direccion(byte Carrera, byte Calle, byte Casa, String extra){
+            this.Carrera = Carrera;
+            this.Calle = Calle;
+            this.Casa = Casa;
+            this.extra = extra;
+        }
+        public String imprimirD(){
+            return "Carrera "+Carrera+" "+Calle+" - "+Casa+" "+extra;
+        }
+    }
 
-    public void agregarVertice(String Numero, int Velocidad_adquirida, String Direccion, String Operadora, int u, int v, int peso){
-        nod.add(new Vertice(Numero, Velocidad_adquirida, Direccion, Operadora));
+
+    public void agregarVertice(String Numero, int Velocidad_adquirida, Direccion direccion, String Operadora, int u, int v){
+        int peso = 5;
+        Vertice a = new Vertice(Numero, Velocidad_adquirida, direccion, Operadora);
+        nod.add(a);
+        if(!nod.contains(new Vertice(" ", 0, new Direccion(direccion.Carrera, (byte)0, (byte)0, " "), " "))){
+            nod.add(new Vertice(" ", 0, new Direccion(direccion.Carrera, (byte)0, (byte)0, " "), " "));
+            nod.sort((v1, v2) -> v1.direccion.Casa - v2.direccion.Casa);
+            nod.sort((v1, v2) -> v1.direccion.Calle - v2.direccion.Calle);
+            nod.sort((v1, v2) -> v1.direccion.Carrera - v2.direccion.Carrera);
+            adj.add(new LinkedList<Arista>());
+            int o = nod.indexOf(new Vertice(" ", 0, new Direccion(direccion.Carrera, (byte)0, (byte)0, " "), " "));
+            agregarEnlace(o, peso);
+        }else if(!nod.contains(new Vertice(" ", 0, new Direccion(direccion.Carrera, direccion.Carrera, (byte)0, " "), " "))){
+            nod.add(new Vertice(" ", 0, new Direccion(direccion.Carrera, direccion.Carrera, (byte)0, " "), " "));
+            nod.sort((v1, v2) -> v1.direccion.Casa - v2.direccion.Casa);
+            nod.sort((v1, v2) -> v1.direccion.Calle - v2.direccion.Calle);
+            nod.sort((v1, v2) -> v1.direccion.Carrera - v2.direccion.Carrera);
+            adj.add(new LinkedList<Arista>());
+            int p = nod.indexOf(new Vertice(" ", 0, new Direccion(direccion.Carrera, direccion.Carrera, (byte)0, " "), " "));
+            agregarEnlace(p, peso);
+        }
+        nod.sort((v1, v2) -> v1.direccion.Casa - v2.direccion.Casa);
+        nod.sort((v1, v2) -> v1.direccion.Calle - v2.direccion.Calle);
+        nod.sort((v1, v2) -> v1.direccion.Carrera - v2.direccion.Carrera);
         adj.add(new LinkedList<Arista>());
-        agregarArista(u, v, peso);
+
+        int i = nod.indexOf(a);
+        agregarEnlace(i, peso);
+        
         this.V++;
     }
+    public void agregarEnlace(int u, int peso) {
+        LinkedList<Arista> aux = new LinkedList<>();
+        aux = adj.get(u);
+        aux.add(new Arista(u, v, peso));
+        adj.set(u, aux);
+        aux = adj.get(v);
+        aux.add(new Arista(v, u, peso));
+        adj.set(v, aux);
+    }
+
     public void agregarArista(int u, int v, int peso) {
         LinkedList<Arista> aux = new LinkedList<>();
         aux = adj.get(u);
@@ -88,91 +147,13 @@ public class Grafo implements Serializable{
                 visited[u] = true;
                 System.out.print(u + " ");
                 for (Arista i : adj.get(u)) {
-                    if (!visited[i.d]) {
-                        stack.push(i.d);
+                    if (!visited[i.getD()]) {
+                        stack.push(i.getD());
                     }
                 }
             }
         }
     }
-
-    /////// ARBOL RECUBRIDOR MINIMO ///////
-    public boolean hayCiclo(int origen, int destino) {
-        boolean[] visited = new boolean[V];
-        Stack<Integer> stack = new Stack<>();
-        stack.push(origen);
-
-        while (!stack.isEmpty()) {
-            int u = stack.pop();
-            if (!visited[u]) {
-                visited[u] = true;
-                for (Arista i : adj.get(u)) {
-                    if (i.d == destino) {
-                        return true;
-                    }
-                    if (!visited[i.d]) {
-                        stack.push(i.d);
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public Grafo Kruskal() {
-        Grafo Arbol_Recubridor_Minimo = new Grafo();
-        LinkedList<Arista> AristasOrdenadas = new LinkedList<>();
-        for (LinkedList<Arista> i : adj) {
-            for (Arista j : i) {
-                AristasOrdenadas.add(j);
-            }
-        }
-
-        Collections.sort(AristasOrdenadas, (a1, a2) -> Integer.compare(a1.peso, a2.peso));
-        for (Arista i : AristasOrdenadas) {
-            if (!Arbol_Recubridor_Minimo.hayCiclo(i.o, i.d)) {
-                Arbol_Recubridor_Minimo.agregarArista(i.o, i.d, i.peso);
-            }
-        }
-
-        return Arbol_Recubridor_Minimo;
-    }
-
-    public Grafo Prims() {
-        boolean[] visited = new boolean[V];
-        Stack<Integer> stack = new Stack<>();
-        Grafo Arbol_Recubridor_Minimo = new Grafo();
-        LinkedList<Arista> AristasOrdenadas = new LinkedList<>();
-        for (LinkedList<Arista> i : adj) {
-            for (Arista j : i) {
-                AristasOrdenadas.add(j);
-            }
-        }
-        Collections.sort(AristasOrdenadas, (a1, a2) -> Integer.compare(a1.peso, a2.peso));
-
-        Arista pos = AristasOrdenadas.getFirst();
-        Arbol_Recubridor_Minimo.agregarArista(pos.o, pos.d, pos.peso);
-
-        stack.push(pos.o);
-        visited[pos.o] = true;
-        visited[pos.d] = true;
-        while (!stack.isEmpty()) {
-            stack.pop();
-            for (Arista i : AristasOrdenadas) {
-                if (visited[i.o] && !visited[i.d]) {
-                    if (!Arbol_Recubridor_Minimo.hayCiclo(i.o, i.d)) {
-                        stack.push(i.d);
-                        visited[i.d] = true;
-                        Arbol_Recubridor_Minimo.agregarArista(i.o, i.d, i.peso);
-                        break;
-                    }
-                }
-            }
-        }
-
-        return Arbol_Recubridor_Minimo;
-    }
-    /////// ARBOL RECUBRIDOR MINIMO ///////
 
     /////// CAMINO MAS CORTO ///////
     @SuppressWarnings("unchecked")
@@ -195,10 +176,10 @@ public class Grafo implements Serializable{
             if (!visitado[u]) {
                 visitado[u] = true;
                 for (Arista i : adj.get(u)) {
-                    if (!visitado[i.d] && distancia[u] + i.peso < distancia[i.d]) {
-                        distancia[i.d] = distancia[u] + i.peso;
-                        pq.add(i.d);
-                        previo[i.d] = u;
+                    if (!visitado[i.getD()] && distancia[u] + i.peso < distancia[i.getD()]) {
+                        distancia[i.getD()] = distancia[u] + i.peso;
+                        pq.add(i.getD());
+                        previo[i.getD()] = u;
                     }
                 }
             }
@@ -242,8 +223,8 @@ public class Grafo implements Serializable{
         }
         for (LinkedList<Arista> i : adj) {
             for (Arista j : i) {
-                W[j.o][j.d] = j.peso;
-                R[j.o][j.d] = j.d;
+                W[j.getO()][j.getD()] = j.peso;
+                R[j.getO()][j.getD()] = j.getD();
             }
         }
 

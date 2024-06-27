@@ -11,45 +11,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import javax.swing.JOptionPane;
-
-import Logica.Grafo;
 
 public class LecturaEscritura implements Serializable{
-    //String rutaUsuarios = "Privado\\"+p.getUsuario()+"_"+p.getContraseña(); //ruta para usuarios
-    //String rutaLu = "Privado\\LU.ser"; //ruta para el hashmap de usuarios
-    
-    //private Map<String, String> Usuarios = leerOCrearHashMapDesdeArchivo(rutaLu);
-    
-    /*public void registrarUsuario(Persona p) {
-        String rutaUsuarios = ("Privado\\"+p.getUsuario()+"_"+p.getContraseña()+".txt"); //ruta para usuarios
-        String rutaGr = "Privado\\Gr.txt"; //ruta para el hashmap de usuarios
-        Map<String, String> Usuarios = leerOCrearHashMapDesdeArchivo(rutaGr);
-        LinkedList lista = new LinkedList();
-        if(p.getContraseña().equals(Usuarios.get(p.getUsuario()))){
-            JOptionPane.showMessageDialog(null, "El usuario ya existe, intente nuevamente.");
-        }
-        else{
-            lista.add(p);
-            guardarObjeto(lista,rutaUsuarios);
-            Usuarios.put(p.getUsuario(), p.getContraseña());
-            guardarHashMapEnArchivo(Usuarios,rutaGr);
-        }
-    }*/
-    
-    public boolean IngresarUsuario(String usuario,  String contraseña){
-        String rutaLu = "Privado\\LU.txt";
-        Map<String, String> Usuarios = leerHashMapDesdeArchivo(rutaLu);
-        if(contraseña.equals(Usuarios.get(usuario))){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
         // Método para guardar un objeto en un archivo en una ruta específica
     private static void guardarObjeto(Object objeto, String rutaArchivo) {
         try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(new File(rutaArchivo)))) {
@@ -60,32 +23,8 @@ public class LecturaEscritura implements Serializable{
             e.printStackTrace();
         }
     }
-    /*   Esta parte se hiso para que hallan dobles pero eso se manejara en otro lado digo yo
-    public void gObjeto(Grafo objeto, String rutaArchivo){
-        LinkedList li = (LinkedList)lObjeto(rutaArchivo);
-        for(int i=1; i<li.size(); i++){
-            Grafo mov = (Grafo)li.get(i);
-            if(mov.getFecha().equals(objeto.getFecha()) && mov.getCategoria().equals(objeto.getCategoria()) && (mov.getMonto() == objeto.getMonto())){
-                JOptionPane.showMessageDialog(null, "El movimiento ya existe");
-                break;
-            }else{
-                li.add(i, objeto);
-                Persona p = (Persona)li.getFirst();
-                p.setMovimiento(objeto.getCategoria(), objeto.getMonto());
-                li.set(0, p);
-                guardarObjeto(li, rutaArchivo);
-                break;
-            }
-        }
-        if(li.size() == 1){
-                li.add(1, objeto);
-                Persona p = (Persona)li.getFirst();
-                p.setMovimiento(objeto.getCategoria(), objeto.getMonto());
-                li.set(0, p);
-                guardarObjeto(li, rutaArchivo);
-        }
-    }*/
-    public void gLista(Object objeto, String rutaArchivo){
+    
+    public void gObjeto(Object objeto, String rutaArchivo){
         guardarObjeto(objeto, rutaArchivo);
     }
 
@@ -105,48 +44,6 @@ public class LecturaEscritura implements Serializable{
     public Object lObjeto(String rutaArchivo){
         return leerObjeto(rutaArchivo);
     }
-    
-    
-    ///////////////////////////////___Esto puede ser considerado si la lectura ordinaria no funciona___////////////////////////////////////
-
-    private static Map<String, String> leerOCrearHashMapDesdeArchivo(String rutaArchivo) {
-        File archivo = new File(rutaArchivo);
-
-        // Verifica si el archivo existe
-        if (archivo.exists()) {
-            return leerHashMapDesdeArchivo(rutaArchivo);
-        } else {
-            // Crea un nuevo HashMap si el archivo no existe
-            Map<String, String> nuevoHashMap = new HashMap<>();
-            guardarHashMapEnArchivo(nuevoHashMap, rutaArchivo);
-            return nuevoHashMap;
-        }
-    }
-    
-    private static void guardarHashMapEnArchivo(Map<String, String> hashMap, String rutaArchivo) {
-        try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(new File(rutaArchivo)))) {//buscar en un ruta un archivo y lo sobreesscribe
-            salida.writeObject(hashMap);
-            salida.close();
-            System.out.println("HashMap guardado con éxito en: " + rutaArchivo);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Método para leer un HashMap desde un archivo
-    private static Map<String, String> leerHashMapDesdeArchivo(String rutaArchivo) {
-        try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(new File(rutaArchivo)))) {
-            Object objetoLeido = entrada.readObject();
-            if (objetoLeido instanceof HashMap) {
-                return (HashMap<String, String>) objetoLeido;
-            }
-            entrada.close();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    
     
 }
 
