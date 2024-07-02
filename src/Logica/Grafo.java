@@ -4,6 +4,7 @@ package Logica;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Stack;
 
 public class Grafo implements Serializable {
@@ -41,22 +42,13 @@ public class Grafo implements Serializable {
     }
 
     private class Arista implements Serializable {
-        private int peso;
-        private Vertice Do, Dd;
+        @SuppressWarnings("unused")
+        private int d, o, peso;
 
         public Arista(int o, int d, int peso) {
-            this.Do = nod.get(o);
-            this.Dd = nod.get(d);
+            this.o = o;
+            this.d = d;
             this.peso = peso;
-        }
-
-        @SuppressWarnings("unused")
-        public int getO() {
-            return nod.indexOf(Do);
-        }
-
-        public int getD() {
-            return nod.indexOf(Dd);
         }
     }
 
@@ -188,6 +180,21 @@ public class Grafo implements Serializable {
         adj.set(v, aux);
     }
 
+    public void VariacionPeso(){
+        Random random = new Random();
+        int posCambio1 = random.nextInt(V);
+        LinkedList<Arista> cambio = adj.get(posCambio1);
+
+        int posCambio2 = random.nextInt(cambio.size());
+        Arista a = cambio.get(posCambio2);
+
+        int valCambio = a.peso + random.nextInt(5+5+1) - 5;
+        a.peso = valCambio;
+
+        cambio.set(posCambio2, a);
+        adj.set(posCambio1, cambio);
+    }
+
     public void dfs(int s) {
         boolean[] visited = new boolean[V];
         Stack<Integer> stack = new Stack<>();
@@ -199,8 +206,8 @@ public class Grafo implements Serializable {
                 visited[u] = true;
                 System.out.print(u + " ");
                 for (Arista i : adj.get(u)) {
-                    if (!visited[i.getD()]) {
-                        stack.push(i.getD());
+                    if (!visited[i.d]) {
+                        stack.push(i.d);
                     }
                 }
             }
@@ -228,10 +235,10 @@ public class Grafo implements Serializable {
             if (!visitado[u]) {
                 visitado[u] = true;
                 for (Arista i : adj.get(u)) {
-                    if (!visitado[i.getD()] && distancia[u] + i.peso < distancia[i.getD()]) {
-                        distancia[i.getD()] = distancia[u] + i.peso;
-                        pq.add(i.getD());
-                        previo[i.getD()] = u;
+                    if (!visitado[i.d] && distancia[u] + i.peso < distancia[i.d]) {
+                        distancia[i.d] = distancia[u] + i.peso;
+                        pq.add(i.d);
+                        previo[i.d] = u;
                     }
                 }
             }
