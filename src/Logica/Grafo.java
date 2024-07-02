@@ -35,7 +35,8 @@ public class Grafo implements Serializable {
     public void imprimirGrafo() {
         for (int i = 0; i < V; i++) {
             if (!nod.get(i).Numero.equals(" ")) {
-                System.out.println("\nNumero: " + nod.get(i).Numero + ", Velocidad: " + nod.get(i).Velocidad_adquirida + ", Direccion: " + nod.get(i).direccion.imprimirD() + ", Operadora: " + nod.get(i).Operadora);
+                System.out.println("\nNumero: " + nod.get(i).Numero + ", Velocidad: " + nod.get(i).Velocidad_adquirida
+                        + ", Direccion: " + nod.get(i).direccion.imprimirD() + ", Operadora: " + nod.get(i).Operadora);
             }
         }
         System.out.println("");
@@ -180,19 +181,21 @@ public class Grafo implements Serializable {
         adj.set(v, aux);
     }
 
-    public void VariacionPeso(){
+    public void VariacionPeso() {
         Random random = new Random();
-        int posCambio1 = random.nextInt(V);
-        LinkedList<Arista> cambio = adj.get(posCambio1);
+        if (random.nextBoolean()) {
+            int posCambio1 = random.nextInt(V);
+            LinkedList<Arista> cambio = adj.get(posCambio1);
 
-        int posCambio2 = random.nextInt(cambio.size());
-        Arista a = cambio.get(posCambio2);
+            int posCambio2 = random.nextInt(cambio.size());
+            Arista a = cambio.get(posCambio2);
 
-        int valCambio = a.peso + random.nextInt(5+5+1) - 5;
-        a.peso = valCambio;
+            int valCambio = a.peso + random.nextInt(5 + 5 + 1) - 5;
+            a.peso = valCambio;
 
-        cambio.set(posCambio2, a);
-        adj.set(posCambio1, cambio);
+            cambio.set(posCambio2, a);
+            adj.set(posCambio1, cambio);
+        }
     }
 
     public void dfs(int s) {
